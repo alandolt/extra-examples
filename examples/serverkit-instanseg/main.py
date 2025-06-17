@@ -4,7 +4,7 @@ import numpy as np
 import uvicorn
 from instanseg import InstanSeg
 
-from imaging_server_kit import algorithm_server, ImageUI, DropDownUI, FloatSpinBoxUI
+from imaging_server_kit import algorithm_server, ImageUI, DropDownUI, FloatUI
 
 
 @algorithm_server(
@@ -17,7 +17,7 @@ from imaging_server_kit import algorithm_server, ImageUI, DropDownUI, FloatSpinB
             title="Model",
             description="Segmentation model",
         ),
-        "pixel_size": FloatSpinBoxUI(
+        "pixel_size": FloatUI(
             default=0.5,
             title="Pixel size (um/px)",
             description="Pixel size (um/px)",

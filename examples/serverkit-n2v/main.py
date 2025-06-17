@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 import uvicorn
 
-from imaging_server_kit import algorithm_server, ImageUI, IntSpinBoxUI
+from imaging_server_kit import algorithm_server, ImageUI, IntUI
 
 import shutil
 from careamics import CAREamist
@@ -16,21 +16,21 @@ from careamics.config import create_n2v_configuration
         "image": ImageUI(
             description="Input image (2D, 3D). If 2D, myst be grayscale (not RGB). If 3D, the image is considered a 2D series."
         ),
-        "epochs": IntSpinBoxUI(
+        "epochs": IntUI(
             default=10,
             title="Epochs",
             description="Number of epochs for training",
             min=1,
             max=1000,
         ),
-        "patch_size": IntSpinBoxUI(
+        "patch_size": IntUI(
             default=16,
             title="Patch size",
             description="Square patch size in pixels. Must be a power of two (16, 32, 64...).",
             min=3,
             max=1024,
         ),
-        "batch_size": IntSpinBoxUI(
+        "batch_size": IntUI(
             default=4,
             title="Batch size",
             description="Batch size for training",

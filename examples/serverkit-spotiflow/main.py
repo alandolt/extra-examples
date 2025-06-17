@@ -7,8 +7,8 @@ from spotiflow.model import Spotiflow
 from imaging_server_kit import (
     algorithm_server,
     ImageUI,
-    FloatSpinBoxUI,
-    IntSpinBoxUI,
+    FloatUI,
+    IntUI,
     DropDownUI,
 )
 
@@ -27,7 +27,7 @@ from imaging_server_kit import (
             items=["general", "hybiss"],
             default="general",
         ),
-        "prob_thresh": FloatSpinBoxUI(
+        "prob_thresh": FloatUI(
             default=0.5,
             min=0,
             max=1,
@@ -35,7 +35,7 @@ from imaging_server_kit import (
             title="Probability threshold",
             description="Probability threshold for detection.",
         ),
-        "min_distance": IntSpinBoxUI(
+        "min_distance": IntUI(
             default=1,
             min=0,
             max=100,
