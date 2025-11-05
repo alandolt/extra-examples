@@ -24,6 +24,7 @@ venv/
 .python-version
 .DS_Store
 **/_version.py
+*.pt
 
 push.sh
 todo.txt
