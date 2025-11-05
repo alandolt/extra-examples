@@ -7,7 +7,7 @@ Each example was created from the Imaging Server Kit's [project template](https:
 
 | Task              | Examples                        |
 |-------------------|---------------------------------|
-| Image segmentation | [CellPose](./examples/serverkit-cellpose/), [StarDist](./examples/serverkit-stardist/), [Instanseg](./examples/serverkit-instanseg/), [SAM-2](./examples/serverkit-sam2/), [Rembg](./examples/serverkit-rembg/) |
+| Image segmentation | [CellPose](./examples/serverkit-cellpose/), [StarDist](./examples/serverkit-stardist/), [Instanseg](./examples/serverkit-instanseg/), [SAM-2](./examples/serverkit-sam2/), [Rembg](./examples/serverkit-rembg/), [CellPose4 (GPU)](./examples/serverkit-cellpose4_gpu/) |
 | Image registration | [StackReg](./examples/serverkit-stackreg/), [Spam](./examples/serverkit-spam/) |
 | Image denoising | [Noise2Void](./examples/serverkit-n2v/) |
 | Points detection | [Spotiflow](./examples/serverkit-spotiflow/) |
