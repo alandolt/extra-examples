@@ -1,55 +1,41 @@
-from typing import List
 from pathlib import Path
 import numpy as np
-import uvicorn
-
-from imaging_server_kit import algorithm_server, ImageUI, IntUI
-
 import shutil
 from careamics import CAREamist
 from careamics.config import create_n2v_configuration
+import imaging_server_kit as sk
 
 
-@algorithm_server(
-    algorithm_name="n2v",
+@sk.algorithm(
     parameters={
-        "image": ImageUI(
+        "image": sk.Image(
             description="Input image (2D, 3D). If 2D, myst be grayscale (not RGB). If 3D, the image is considered a 2D series."
         ),
-        "epochs": IntUI(
-            default=10,
-            title="Epochs",
+        "epochs": sk.Integer(
+            name="Epochs",
             description="Number of epochs for training",
+            default=10,
             min=1,
             max=1000,
         ),
-        "patch_size": IntUI(
-            default=16,
-            title="Patch size",
+        "patch_size": sk.Integer(
+            name="Patch size",
             description="Square patch size in pixels. Must be a power of two (16, 32, 64...).",
+            default=16,
             min=3,
             max=1024,
         ),
-        "batch_size": IntUI(
-            default=4,
-            title="Batch size",
+        "batch_size": sk.Integer(
+            name="Batch size",
             description="Batch size for training",
+            default=4,
             min=1,
             max=1024,
         ),
     },
-    sample_images=[Path(__file__) / "sample_images" / "blobs-noisy.tif"],
-    metadata_file="metadata.yaml",
+    samples=[{"image": Path(__file__).parent / "samples" / "blobs-noisy.tif"}],
 )
-def n2v_server(
-    image: np.ndarray,
-    epochs: int,
-    patch_size: int,
-    batch_size: int,
-) -> List[tuple]:
-    """Runs the algorithm."""
-    image_ndim = len(image.shape)
-
+def n2v_algo(image, epochs, patch_size, batch_size):
     if image.ndim == 2:
         # Consider it a single image XY type
         config = create_n2v_configuration(
@@ -60,7 +46,6 @@ def n2v_server(
             batch_size=batch_size,
             num_epochs=epochs,
         )
-
     elif image.ndim == 3:
         # Consider it a Sample-YX type
         config = create_n2v_configuration(
@@ -73,9 +58,7 @@ def n2v_server(
         )
 
     careamist = CAREamist(source=config)
-
     careamist.train(train_source=image)
-
     prediction = careamist.predict(source=image)
     prediction = np.squeeze(np.array(prediction))
 
@@ -83,8 +66,8 @@ def n2v_server(
     shutil.rmtree(Path(__file__).parent / "csv_logs")
     shutil.rmtree(Path(__file__).parent / "checkpoints")
 
-    return [(prediction, {"name": "Denoised"}, "image")]
+    return sk.Image(prediction, name=f"Denoised ({epochs} epochs)")
 
 
 if __name__ == "__main__":
-    uvicorn.run(n2v_server, host="0.0.0.0", port=8000)
+    sk.serve(n2v_algo)

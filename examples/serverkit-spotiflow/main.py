@@ -1,67 +1,53 @@
-from typing import List
 from pathlib import Path
 import numpy as np
-import uvicorn
 from spotiflow.model import Spotiflow
-
-from imaging_server_kit import (
-    algorithm_server,
-    ImageUI,
-    FloatUI,
-    IntUI,
-    DropDownUI,
-)
+import imaging_server_kit as sk
 
 
-@algorithm_server(
-    algorithm_name="spotiflow",
+@sk.algorithm(
     parameters={
-        "image": ImageUI(
-            title="Image (YX or CYX)",
+        "image": sk.Image(
+            name="Image (YX or CYX)",
             description="Input image. If 2D, interpreted as single-channel (YX order). If 3D, interpreted as multichannel in CYX order.",
             dimensionality=[2, 3],
         ),
-        "model_name": DropDownUI(
-            title="Model",
+        "model_name": sk.Choice(
+            name="Model",
             description="Pretrained model to use.",
             items=["general", "hybiss"],
             default="general",
         ),
-        "prob_thresh": FloatUI(
+        "prob_thresh": sk.Float(
+            name="Probability threshold",
+            description="Probability threshold for detection.",
             default=0.5,
             min=0,
             max=1,
             step=0.01,
-            title="Probability threshold",
-            description="Probability threshold for detection.",
         ),
-        "min_distance": IntUI(
+        "min_distance": sk.Integer(
+            name="Min distance",
+            description="Minimum distance between spots for NMS.",
             default=1,
             min=0,
             max=100,
-            title="Min distance",
-            description="Minimum distance between spots for NMS.",
         ),
-        "device": DropDownUI(
-            title="Device",
+        "device": sk.Choice(
+            name="Device",
             description="Device to use for inference",
             items=["cpu", "cuda", "mps"],
             default="cpu",
         ),
     },
-    sample_images=[
-        Path(__file__).parent / "sample_images" / "hybiss_2d.tif",
-    ],
-    metadata_file="metadata.yaml",
+    samples=[{"image": Path(__file__).parent / "samples" / "hybiss_2d.tif"}],
 )
-def spotiflow_server(
+def spotiflow_algo(
     image: np.ndarray,
     model_name: str,
     prob_thresh: float,
     min_distance: int,
     device: str,
-) -> List[tuple]:
-    """Runs the algorithm."""
+):
     model = Spotiflow.from_pretrained(model_name, map_location=device)
 
     points_meta = {
@@ -88,7 +74,7 @@ def spotiflow_server(
             "intensities": intensities,
         }
 
-        return [(points, points_meta, "points")]
+        return sk.Points(points, meta=points_meta)
 
     # Multi-channel 2D case (CYX order): we predict all channels independently and aggregate the results
     elif image.ndim == 3:
@@ -121,8 +107,8 @@ def spotiflow_server(
             "intensities": all_intensities,
         }
 
-        return [(all_points, points_meta, "points3d")]
+        return sk.Points(all_points, meta=points_meta)
 
 
 if __name__ == "__main__":
-    uvicorn.run(spotiflow_server.app, host="0.0.0.0", port=8000)
+    sk.serve(spotiflow_algo)

@@ -1,9 +1,5 @@
-project_slug: "sam2"
-project_url: "https://github.com/facebookresearch/sam2"
-serverkit_repo_url: "https://github.com/Imaging-Server-Kit/serverkit-sam2"
-project_name: "SAM 2"
+name: "SAM-2"
 description: "Segment Anything in Images."
-used_for:
-  - "Segmentation"
+project_url: "https://github.com/facebookresearch/sam2"
 tags:
-  - ""
+  - "Segmentation"

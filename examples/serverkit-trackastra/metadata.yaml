@@ -1,9 +1,6 @@
-project_slug: "trackastra"
-project_url: "https://github.com/weigertlab/trackastra"
-serverkit_repo_url: "https://github.com/Imaging-Server-Kit/serverkit-trackastra"
-project_name: "Trackastra"
+name: "Trackastra"
 description: "Tracking by Association with Transformers."
-used_for:
-  - "Tracking"
+project_url: "https://github.com/weigertlab/trackastra"
 tags:
+  - "Tracking"
   - "EPFL"

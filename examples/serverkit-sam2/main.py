@@ -1,15 +1,12 @@
-from typing import List
 from pathlib import Path
 import numpy as np
-import uvicorn
+import pandas as pd
 from skimage.color import gray2rgb
 from skimage.exposure import rescale_intensity
-
-from imaging_server_kit import algorithm_server, ImageUI, PointsUI, ShapesUI, BoolUI
-
 import torch
 from sam2.sam2_image_predictor import SAM2ImagePredictor
 from sam2.automatic_mask_generator import SAM2AutomaticMaskGenerator
+import imaging_server_kit as sk
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -21,42 +18,41 @@ generator = SAM2AutomaticMaskGenerator.from_pretrained(
 )
 
 
-@algorithm_server(
-    algorithm_name="sam2",
+@sk.algorithm(
     parameters={
-        "image": ImageUI(description="Input image (2D, RGB)."),
-        "boxes": ShapesUI(
-            title="Boxes",
+        "image": sk.Image(description="Input image (2D, RGB).", dimensionality=[2, 3]),
+        "boxes": sk.Boxes(
+            name="Boxes",
             description="Boxes prompt.",
+            required=False,
         ),
-        "points": PointsUI(
-            title="Points",
+        "points": sk.Points(
+            name="Points",
             description="Points prompt.",
+            required=False,
         ),
-        "auto_mode": BoolUI(
-            default=False,
-            title="Auto mode",
+        "auto_mode": sk.Bool(
+            name="Auto mode",
             description="Run SAM in auto (grid) mode",
+            default=False,
         ),
     },
-    sample_images=[
-        Path(__file__).parent / "sample_images" / "groceries.jpg",
+    samples=[
+        {
+            "image": Path(__file__).parent / "samples" / "groceries.jpg",
+            "points": pd.read_csv(Path(__file__).parent / "samples" / "points.csv")[
+                ["axis-0", "axis-1"]
+            ].values,
+        },
     ],
-    metadata_file="metadata.yaml",
 )
-def sam2_server(
-    image: np.ndarray,
-    boxes: np.ndarray,
-    points: np.ndarray,
-    auto_mode: bool,
-) -> List[tuple]:
-    """Runs the algorithm."""
+def sam2_algo(image, boxes, points, auto_mode):
     if len(image.shape) == 2:
         image = rescale_intensity(image, out_range=(0, 255)).astype(np.uint8)
         image = gray2rgb(image)
 
     rx, ry, _ = image.shape
-    segmentation = np.zeros((rx, ry), dtype=np.uint16)
+    mask = np.zeros((rx, ry), dtype=np.uint16)
 
     if auto_mode:
         with torch.inference_mode(), torch.autocast(DEVICE, dtype=torch.bfloat16):
@@ -64,24 +60,23 @@ def sam2_server(
 
         for k, ann in enumerate(masks):
             m = ann.get("segmentation")
-            segmentation[m] = k + 1
+            mask[m] = k + 1
     else:
         # Boxes should be in (N, 4) format (top-left, bottom-right corner)
         # Invert X-Y and keep only two vertices
-        # Note - right now, this can cause bugs if the boxes arent drawn in the top to bottom direction
-        if len(boxes):
-            print(f"{boxes=}")
-            boxes = boxes[:, ::2, ::-1].reshape((len(boxes), -1)).copy()
-        else:
-            boxes = None
+        # TODO: This causes errors if the boxes arent drawn in the top to bottom direction
+        if boxes is not None:
+            if len(boxes) > 0:
+                boxes = boxes[:, ::2, ::-1].reshape((len(boxes), -1)).copy()
 
-        if len(points):
-            point_labels = np.ones(len(points))
-            points = points[:, ::-1].copy()  # Invert X-Y
-        else:
-            points = None
-            point_labels = None
+        # Handle points prompts
+        point_labels = None
+        if points is not None:
+            if len(points) > 0:
+                point_labels = np.ones(len(points))
+                points = points[:, ::-1].copy()  # Invert X-Y
 
+        # Run the model
         with torch.inference_mode(), torch.autocast(DEVICE, dtype=torch.bfloat16):
             predictor.set_image(image)
             masks, _, _ = predictor.predict(
@@ -92,10 +87,14 @@ def sam2_server(
             )
 
         for k, m in enumerate(masks):
-            segmentation[np.squeeze(m) == 1] = k + 1
+            mask[np.squeeze(m) == 1] = k + 1
 
-    return [(segmentation, {"name": "SAM-2 result"}, "instance_mask")]
+    return sk.Mask(mask, name="SAM-2 result")
 
 
 if __name__ == "__main__":
-    uvicorn.run(sam2_server, host="0.0.0.0", port=8000)
+    # sk.serve(sam2_algo)
+    import napari
+
+    sk.to_napari(sam2_algo)
+    napari.run()

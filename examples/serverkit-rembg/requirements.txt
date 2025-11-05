@@ -1,0 +1,5 @@
+imaging-server-kit
+rembg
+onnx
+onnxruntime
+numpy<2

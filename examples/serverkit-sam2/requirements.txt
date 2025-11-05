@@ -4,4 +4,5 @@ torchvision
 Pillow
 hydra-core
 huggingface-hub
+pandas
 git+https://github.com/facebookresearch/sam2.git

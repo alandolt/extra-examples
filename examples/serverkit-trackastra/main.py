@@ -1,50 +1,36 @@
-from typing import List
 from pathlib import Path
-import numpy as np
-import uvicorn
-
-from imaging_server_kit import algorithm_server, ImageUI, MaskUI, DropDownUI
-
 from trackastra.model import Trackastra
 from trackastra.tracking import graph_to_napari_tracks
+import imaging_server_kit as sk
+import skimage.io
 
-@algorithm_server(
-    algorithm_name="trackastra",
+
+@sk.algorithm(
     parameters={
-        "image": ImageUI(),
-        "mask": MaskUI(),
-        "mode": DropDownUI(
-            title="Mode",
+        "image": sk.Image(),
+        "mask": sk.Mask(),
+        "mode": sk.Choice(
+            name="Mode",
             description="Tracking mode.",
             items=["greedy", "greedy_nodiv"],
             default="greedy",
         ),
     },
-    sample_images=[
-        Path(__file__).parent / "sample_images" / "trpL_150310-11_img.tif",
-        Path(__file__).parent / "sample_images" / "trpL_150310-11_mask.tif",
+    samples=[
+        {
+            "image": Path(__file__).parent / "samples" / "trpL_150310-11_img.tif",
+            "mask": skimage.io.imread(
+                Path(__file__).parent / "samples" / "trpL_150310-11_mask.tif"
+            ),
+        },
     ],
-    metadata_file="metadata.yaml",
 )
-def trackastra_server(
-    image: np.ndarray,
-    mask: np.ndarray,
-    mode: str,
-) -> List[tuple]:
-    """Runs the algorithm."""
-
-    device = "cpu"  # For now - To avoid CUDA errors
-
-    model = Trackastra.from_pretrained("general_2d", device=device)
-
-    track_graph = model.track(
-        image, mask, mode=mode
-    )  # or mode="ilp", or "greedy_nodiv"
-
-    napari_tracks, napari_tracks_graph, _ = graph_to_napari_tracks(track_graph)
-
-    return [(napari_tracks, {"name": "Tracks"}, "tracks")]
+def trackastra_algo(image, mask, mode):
+    model = Trackastra.from_pretrained("general_2d", device="cpu") # cpu for now, to avoid CUDA errors
+    graph, masks_tracked = model.track(image, mask, mode)
+    tracks, *_ = graph_to_napari_tracks(graph)
+    return sk.Tracks(tracks)
 
 
 if __name__ == "__main__":
-    uvicorn.run(trackastra_server.app, host="0.0.0.0", port=8000)
+    sk.serve(trackastra_algo)

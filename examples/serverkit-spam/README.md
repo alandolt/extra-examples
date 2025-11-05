@@ -29,4 +29,6 @@ docker compose up
 
 The server will be running on http://localhost:8000.
 
-<!-- ## Sample images provenance -->
+## Sample images provenance
+
+- `image1.tif`, `image2.tif`: From the Spam project doc.

@@ -1,11 +1,8 @@
-project_slug: "spotiflow"
-project_url: "https://github.com/weigertlab/spotiflow"
-serverkit_repo_url: "https://github.com/Imaging-Server-Kit/serverkit-spotiflow"
-project_name: "Spotiflow"
+name: "Spotiflow"
 description: "Accurate and efficient spot detection with stereographic flow."
-used_for:
-  - "Points detection"
+project_url: "https://github.com/weigertlab/spotiflow"
 tags:
+  - "Points detection"
   - "Deep learning"
   - "Spatial transcriptomics"
   - "Cell biology"

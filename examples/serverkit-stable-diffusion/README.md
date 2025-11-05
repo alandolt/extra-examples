@@ -28,7 +28,3 @@ docker compose up
 ```
 
 The server will be running on http://localhost:8000.
-
-<!-- ## Sample images provenance -->
-
-<!-- Fill if necessary. -->

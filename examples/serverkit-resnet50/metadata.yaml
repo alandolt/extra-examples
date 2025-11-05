@@ -1,9 +1,6 @@
-project_slug: "resnet50"
+name: "ResNet50"
+description: "Image classification with a ResNet50 pretrained model."
 project_url: "https://huggingface.co/microsoft/resnet-50"
-serverkit_repo_url: "https://github.com/Imaging-Server-Kit/serverkit-resnet50"
-project_name: "ResNet50 Image Classification"
-description: "ResNet50 image classification demo"
-used_for:
-  - "Classification"
 tags:
+  - "Classification"
   - "Huggingface"

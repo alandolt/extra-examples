@@ -1,30 +1,21 @@
-from typing import List
-from pathlib import Path
 import numpy as np
-import uvicorn
-
-from imaging_server_kit import algorithm_server, ImageUI, StringUI
 from transformers import BlipProcessor, BlipForConditionalGeneration
+import imaging_server_kit as sk
+import skimage.data
 
 
-@algorithm_server(
-    algorithm_name="blip-captioning",
+@sk.algorithm(
     parameters={
-        "image": ImageUI(description="Input image (2D, RGB)."),
-        "conditional_text": StringUI(
-            default="an image of",
-            title="Text",
+        "image": sk.Image(description="Input image (2D, RGB)."),
+        "conditional_text": sk.String(
+            name="Conditional text",
             description="Conditional text (beginning of the caption).",
+            default="an image of",
         ),
     },
-    sample_images=[Path(__file__).parent / "sample_images" / "astronaut.tif"],
-    metadata_file="metadata.yaml",
+    samples=[{"image": skimage.data.astronaut()}],
 )
-def blip_server(
-    image: np.ndarray,
-    conditional_text: str,
-) -> List[tuple]:
-    """Runs the algorithm."""
+def blip_algo(image: np.ndarray, conditional_text: str):
     processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
     model = BlipForConditionalGeneration.from_pretrained(
         "Salesforce/blip-image-captioning-base"
@@ -34,8 +25,11 @@ def blip_server(
     out = model.generate(**inputs)
     caption = processor.decode(out[0], skip_special_tokens=True)
 
-    return [(caption, {}, "text")]
+    return sk.String(caption, name="Caption")
 
 
 if __name__ == "__main__":
-    uvicorn.run(blip_server.app, host="0.0.0.0", port=8000)
+    # sk.serve(blip_algo)
+    import napari
+    sk.to_napari(blip_algo)
+    napari.run()

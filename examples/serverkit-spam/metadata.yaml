@@ -1,9 +1,6 @@
-project_slug: "spam"
-project_url: "https://www.spam-project.dev/"
-serverkit_repo_url: "https://github.com/Imaging-Server-Kit/serverkit-spam"
-project_name: "Spam"
+title: "Image registration"
 description: "The registration function from spam.DIC"
-used_for:
-  - "Registration"
+project_url: "https://www.spam-project.dev/"
 tags:
+  - "Registration"
   - "EPFL"

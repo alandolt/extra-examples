@@ -1,21 +1,15 @@
-from typing import List
-from pathlib import Path
 import numpy as np
-import uvicorn
 import torch
 from transformers import AutoImageProcessor, ResNetForImageClassification
+import imaging_server_kit as sk
+import skimage.data
 
-from imaging_server_kit import algorithm_server, ImageUI
-
-
-@algorithm_server(
-    algorithm_name="resnet50",
-    parameters={"image": ImageUI(description="Input image (2D, RGB)")},
-    sample_images=[Path(__file__).parent / "sample_images" / "astronaut.tif"],
-    metadata_file="metadata.yaml",
+@sk.algorithm(
+    name="ResNet50",
+    parameters={"image": sk.Image(description="Input image (2D, RGB)")},
+    samples=[{"image": skimage.data.astronaut()}],
 )
-def resnet_server(image: np.ndarray) -> List[tuple]:
-    """Runs the algorithm."""
+def resnet_algo(image: np.ndarray):
     processor = AutoImageProcessor.from_pretrained("microsoft/resnet-50")
     model = ResNetForImageClassification.from_pretrained("microsoft/resnet-50")
     inputs = processor(image, return_tensors="pt")
@@ -26,8 +20,7 @@ def resnet_server(image: np.ndarray) -> List[tuple]:
     predicted_label_idx = logits.argmax(-1).item()
     predicted_label = model.config.id2label[predicted_label_idx]
 
-    return [(predicted_label, {}, "class")]
-
+    return sk.Choice(predicted_label)
 
 if __name__ == "__main__":
-    uvicorn.run(resnet_server.app, host="0.0.0.0", port=8000)
+    sk.serve(resnet_algo)

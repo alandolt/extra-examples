@@ -1,9 +1,6 @@
-project_slug: "n2v"
-project_url: "https://github.com/CAREamics/careamics"
-serverkit_repo_url: "https://github.com/Imaging-Server-Kit/serverkit-n2v"
-project_name: "Noise2Void"
+name: "Noise2Void"
 description: "Learning Denoising from Single Noisy Images"
-used_for:
-  - "Denoising"
+project_url: "https://github.com/CAREamics/careamics"
 tags:
+  - "Denoising"
   - "Deep learning"

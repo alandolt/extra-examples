@@ -1,9 +1,6 @@
-project_slug: "stable-diffusion"
-project_url: "https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5"
-serverkit_repo_url: "https://github.com/Imaging-Server-Kit/serverkit-stable-diffusion"
-project_name: "Stable Diffusion Image Generation"
+name: "Stable Diffusion"
 description: "Image generation using Stable Diffusion v1-5."
-used_for:
-  - "Image generation"
+project_url: "https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5"
 tags:
+  - "Imagex generation"
   - "Huggingface"

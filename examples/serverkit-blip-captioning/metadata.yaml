@@ -1,9 +1,6 @@
-project_slug: "blip-captioning"
-project_url: "https://huggingface.co/Salesforce/blip-image-captioning-base"
-serverkit_repo_url: "https://github.com/Imaging-Server-Kit/serverkit-blip-captioning"
-project_name: "BLIP Image Captioning"
+name: "Image Captioning (BLIP)"
 description: "Automatic image captioning using BLIP."
-used_for:
-  - "Captioning"
+project_url: "https://huggingface.co/Salesforce/blip-image-captioning-base"
 tags:
   - "Huggingface"
+  - "Captioning"
