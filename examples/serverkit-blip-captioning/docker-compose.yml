@@ -1,5 +1,5 @@
 services:
-  blip-captioning:
+  blip:
     build:
       context: .
     ports:

@@ -1,5 +1,5 @@
 services:
-  stardist:
+  stackreg:
     build:
       context: .
     ports:

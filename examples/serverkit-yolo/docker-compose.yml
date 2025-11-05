@@ -1,5 +1,5 @@
 services:
-  trackpy:
+  yolo:
     build:
       context: .
     ports:
