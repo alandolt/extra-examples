@@ -1,3 +1,2 @@
 imaging-server-kit
-opencv-contrib-python-headless
 ultralytics

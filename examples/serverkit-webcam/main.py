@@ -4,7 +4,6 @@ Example usage of `napari-serverkit` to implement a live stream from a USB camera
 
 import cv2
 import numpy as np
-import napari
 import imaging_server_kit as sk
 
 from skimage.filters import sobel, threshold_otsu
@@ -50,8 +49,5 @@ def stream_webcam(webcam_idx, filter):
             yield sk.Image(frame, name="Webcam stream")
         
 
-
 if __name__ == "__main__":
-    import napari
-    sk.to_napari(stream_webcam)
-    napari.run()
+    sk.serve(stream_webcam)

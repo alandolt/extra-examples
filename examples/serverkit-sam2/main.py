@@ -93,8 +93,4 @@ def sam2_algo(image, boxes, points, auto_mode):
 
 
 if __name__ == "__main__":
-    # sk.serve(sam2_algo)
-    import napari
-
-    sk.to_napari(sam2_algo)
-    napari.run()
+    sk.serve(sam2_algo)

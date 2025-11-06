@@ -29,7 +29,4 @@ def blip_algo(image: np.ndarray, conditional_text: str):
 
 
 if __name__ == "__main__":
-    # sk.serve(blip_algo)
-    import napari
-    sk.to_napari(blip_algo)
-    napari.run()
+    sk.serve(blip_algo)

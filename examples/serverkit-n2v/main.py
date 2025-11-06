@@ -33,7 +33,7 @@ import imaging_server_kit as sk
             max=1024,
         ),
     },
-    samples=[{"image": Path(__file__).parent / "samples" / "blobs-noisy.tif"}],
+    samples=[{"image": Path(__file__).parent / "samples" / "blobs-noisy.tif", "patch_size": 32}],
 )
 def n2v_algo(image, epochs, patch_size, batch_size):
     if image.ndim == 2:

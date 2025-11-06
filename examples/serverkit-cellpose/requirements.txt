@@ -3,4 +3,3 @@ cellpose<4
 torch
 torchvision 
 torchaudio
-opencv-contrib-python-headless

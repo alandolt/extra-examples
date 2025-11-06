@@ -57,7 +57,7 @@ def spam_reg_algo(fixed_image, moving_image):
         sk.Image(
             registered_image,
             name="Registered",
-            meta={"contrast_limits": [registered_image.min(), registered_image.max()]},
+            meta={"contrast_limits": [float(registered_image.min()), float(registered_image.max())]},
         ),
         sk.Image(disp_y, name="Dy", meta={"colormap": "viridis"}),
         sk.Image(disp_x, name="Dx", meta={"colormap": "viridis"}),
