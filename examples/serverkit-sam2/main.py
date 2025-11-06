@@ -51,6 +51,8 @@ def sam2_algo(image, boxes, points, auto_mode):
         image = rescale_intensity(image, out_range=(0, 255)).astype(np.uint8)
         image = gray2rgb(image)
 
+    image = rescale_intensity(image, out_range=(0, 1)).astype(np.float32)
+    
     rx, ry, _ = image.shape
     mask = np.zeros((rx, ry), dtype=np.uint16)
 
