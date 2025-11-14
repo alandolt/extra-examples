@@ -40,8 +40,7 @@ def yolo_detect_live(
     webcam_idx: int,
     device: str,
 ):
-    # model = YOLO("yolo11n.pt")
-    model = YOLO("/home/wittwer/code/yolo-workshop/models/quinoa_500ep/train/weights/best.pt")
+    model = YOLO("yolo11n.pt")
     camera = VideoCamera(webcam_idx)
     while True:
         frame = camera.get_frame()
