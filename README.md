@@ -17,7 +17,7 @@ Each example was created from the Imaging Server Kit's [project template](https:
 | Tracking | [Trackpy](./examples/serverkit-trackpy/), [Trackastra](./examples/serverkit-trackastra/) |
 | Image generation | [Stable Diffusion](./examples/serverkit-stable-diffusion/) |
 | Image-to-text | [ResNet50](./examples/serverkit-resnet50/), [BLIP captioning](./examples/serverkit-blip-captioning/) |
-| Streaming | [Webcam stream](./examples/serverkit-webcam/) |
+| Live updates | [Webcam stream](./examples/serverkit-webcam/) |
 
 ## Contributing
 
