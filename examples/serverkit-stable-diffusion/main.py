@@ -5,6 +5,7 @@ import imaging_server_kit as sk
 
 
 @sk.algorithm(
+    name="stable-diffusion",
     parameters={
         "prompt": sk.String(
             name="Prompt",
