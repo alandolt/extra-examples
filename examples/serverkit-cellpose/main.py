@@ -10,7 +10,7 @@ import imaging_server_kit as sk
         "image": sk.Image(
             name="Image",
             description="Input image (2D).",
-            dimensionality=[2],
+            dimensionality=[2, 3],
         ),
         "model_name": sk.Choice(
             name="Model",
