@@ -42,6 +42,7 @@ import imaging_server_kit as sk
             max=1.0,
             step=0.01,
         ),
+        "gpu": sk.Bool(name="GPU", default=False),
     },
     description="A generalist algorithm for cellular segmentation.",
     tags=[
@@ -60,20 +61,16 @@ def cellpose_algo(
     diameter: int,
     flow_threshold: float,
     cellprob_threshold: float,
+    gpu: bool,
 ):
-    yield sk.Notification(f"Loading: {model_name} model")
     model = models.CellposeModel(
-        gpu=False,  # For now
+        gpu=gpu,
         model_type=model_name,
     )
 
     if diameter == 0:
         diameter = None
-        yield sk.Notification(
-            "Diameter is set to None. The size of the cells will be estimated on a per image basis"
-        )
 
-    yield sk.Notification(f"Running: {model_name} model")
     segmentation, flows, styles = model.eval(
         image,
         diameter=diameter,
@@ -81,7 +78,6 @@ def cellpose_algo(
         cellprob_threshold=cellprob_threshold,
         channels=[0, 0],  # Grayscale image only (for now)
     )
-    yield sk.Notification("Returning results..")
     return sk.Mask(segmentation, name="CellPose result")
 
 
