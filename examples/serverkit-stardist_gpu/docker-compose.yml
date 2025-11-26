@@ -1,0 +1,16 @@
+services:
+  stardist:
+    container_name: stardist_new
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: serverkit_stardist:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - E:\models\stardist:/models
+    deploy: 
+      resources: 
+        reservations: 
+          devices: 
+            - capabilities: [gpu]
